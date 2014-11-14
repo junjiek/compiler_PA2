@@ -1,8 +1,1 @@
 /bin
-/result
-*.class
-Parser.java
-Parser.output
-Lexer.java
-
-
