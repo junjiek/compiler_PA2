@@ -1,1 +1,10 @@
-*** Error at (8,18): syntax error
+GLOBAL SCOPE:
+    (1,1) -> class Main
+    CLASS SCOPE OF 'Main':
+        (3,17) -> static function main : void
+        FORMAL SCOPE OF 'main':
+            LOCAL SCOPE:
+                (4,13) -> variable i : int
+                (5,13) -> variable state : int
+                (6,13) -> variable s : string
+                (7,11) -> variable b : bool
