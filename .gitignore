@@ -3,6 +3,4 @@ decaf_PA2/result/
 *.class
 Parser.java
 Parser.output
-Lexer.java
-
-
+decaf_PA2/src/decaf/frontend/Lexer.java
