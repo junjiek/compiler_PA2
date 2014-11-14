@@ -3,6 +3,6 @@
 *.class
 Parser.java
 Parser.output
-/src/decaf/frontend/Lexer.java
+Lexer.java
 
 
