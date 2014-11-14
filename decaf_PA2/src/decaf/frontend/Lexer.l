@@ -37,19 +37,19 @@ HEX_INTEGER			= (0[Xx]{HEX_DIGIT}+)
 DEC_INTEGER			= ({DIGIT}+)
 INTEGER				= ({HEX_INTEGER}|{DEC_INTEGER})
 IDENTIFIER			= ([A-Za-z][_0-9A-Za-z]*)
-SIMPLE_OPERATOR		= ("+"|"-"|"*"|"/"|"%"|"="|"<"|">"|"."|","|";"|"!"|"("|")"|"["|"]"|"{"|"}")
+SIMPLE_OPERATOR		= ("+"|"-"|"*"|"/"|"%"|"="|"<"|">"|"."|","|";"|"!"|"("|")"|"["|"]"|"{"|"}"|"?"|":")
 S_COMMENT			= ("//"[^\r\n]*{NEWLINE})
 WHITESPACE			= ([ \t]+)
+EVERYTHING			= (.|[^.])
 
 	// 开始条件S表示字符串
-%x S
+%x S, ML_COMMENT
 
 %%
 	// 识别注释和空白字符的规则
 {WHITESPACE}		{ /* Just ignore */    }
 {NEWLINE}			{ /* Just ignore */    }
 {S_COMMENT}			{ /* Just ignore */    }
-
 
 	// 识别关键字的规则 
 "void"				{ return keyword(Parser.VOID);			}
@@ -72,6 +72,13 @@ WHITESPACE			= ([ \t]+)
 "ReadLine"			{ return keyword(Parser.READ_LINE);		}
 "static"			{ return keyword(Parser.STATIC);		}
 "instanceof"		{ return keyword(Parser.INSTANCEOF);	}
+	// repeat-until
+"repeat"			{ return keyword(Parser.REPEAT);		}
+"until"				{ return keyword(Parser.UNTIL);			}
+	// switch-case
+"switch"			{ return keyword(Parser.SWITCH);		}
+"case"				{ return keyword(Parser.CASE);			}
+"default"			{ return keyword(Parser.DEFAULT);		}
 
 	// 识别操作符的规则
 "<="				{ return operator(Parser.LESS_EQUAL);	}
@@ -81,6 +88,9 @@ WHITESPACE			= ([ \t]+)
 "&&"				{ return operator(Parser.AND);			}
 "||"				{ return operator(Parser.OR);			}
 {SIMPLE_OPERATOR}	{ return operator((int)yycharat(0));	}
+	// 自增、自减运算
+"++"				{ return operator(Parser.SELF_INC);		}
+"--"				{ return operator(Parser.SELF_DEC);		}
 
 	// 识别常数的规则
 "true"				{ return boolConst(true);										}
@@ -99,6 +109,14 @@ WHITESPACE			= ([ \t]+)
 <S>"\\\""			{ buffer.append('"');											}
 <S>"\\\\"			{ buffer.append('\\'); 											}
 <S>.				{ buffer.append(yytext()); 										}
+
+	// 多行注释
+<YYINITIAL>"/*"				{ sloc = getLocation();
+							  yybegin(ML_COMMENT); }
+<ML_COMMENT>"*/"			{ yybegin(YYINITIAL); }
+<ML_COMMENT><<EOF>>			{ issueError(new UntermCommentError(sloc));
+							  yybegin(YYINITIAL);}
+<ML_COMMENT>{EVERYTHING}	{ /* Just ignore */ }
 
 	// 识别标识符的规则
 {IDENTIFIER}		{ return identifier(yytext());			}

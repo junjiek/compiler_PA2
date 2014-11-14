@@ -79,6 +79,16 @@ public abstract class Tree {
     public static final int BLOCK = SKIP + 1;
 
     /**
+     * SwitchBlocks, of type SwitchBlock.
+     */
+    public static final int SWITCHBLOCK = BLOCK + 1;
+
+    /**
+     * CaseBlocks, of type CaseBlock.
+     */
+    public static final int CASEBLOCK = SWITCHBLOCK + 1;
+
+    /**
      * Do-while loops, of type DoLoop.
      */
     public static final int DOLOOP = BLOCK + 1;
@@ -94,9 +104,14 @@ public abstract class Tree {
     public static final int FORLOOP = WHILELOOP + 1;
 
     /**
+     * Repeat-until-loops, of type RepeatLoop.
+     */
+    public static final int REPEATLOOP = FORLOOP + 1;
+
+    /**
      * Labelled statements, of type Labelled.
      */
-    public static final int LABELLED = FORLOOP + 1;
+    public static final int LABELLED = REPEATLOOP + 1;
 
     /**
      * Switch statements, of type Switch.
@@ -109,9 +124,14 @@ public abstract class Tree {
     public static final int CASE = SWITCH + 1;
 
     /**
+     * Default part in switch statements, of type Default.
+     */
+    public static final int DEFAULT = CASE + 1;
+
+    /**
      * Synchronized statements, of type Synchonized.
      */
-    public static final int SYNCHRONIZED = CASE + 1;
+    public static final int SYNCHRONIZED = DEFAULT + 1;
 
     /**
      * Try statements, of type Try.
@@ -288,7 +308,12 @@ public abstract class Tree {
     public static final int DIV = MUL + 1;
     public static final int MOD = DIV + 1;
 
-    public static final int NULL = MOD + 1;
+    /**
+     * Ternary operators, of type Binary.
+     */
+    public static final int TERNARY = MOD + 1;
+
+    public static final int NULL = TERNARY + 1;
     public static final int CALLEXPR = NULL + 1;
     public static final int THISEXPR = CALLEXPR + 1;
     public static final int READINTEXPR = THISEXPR + 1;
@@ -511,6 +536,64 @@ public abstract class Tree {
     	}
     }
 
+    public static class SwitchBlock extends Tree {
+      public List<Tree> caseList;
+      public Tree defaultCase;
+ 
+      public SwitchBlock(List<Tree> caseList, Tree defaultCase, Location loc) {
+          super(SWITCHBLOCK, loc);
+        this.caseList = caseList;
+        this.defaultCase = defaultCase;
+      }
+
+      @Override
+        public void accept(Visitor v) {
+            v.visitSwitchBlock(this);
+        }
+      
+      @Override
+      public void printTo(IndentPrintWriter pw) {
+        pw.println("switchblock");
+        pw.incIndent();
+        for (Tree s : caseList) {
+          s.printTo(pw);
+        }
+        if (defaultCase != null) {
+          defaultCase.printTo(pw);
+        }
+        pw.decIndent();
+      }
+    }
+
+    public static class CaseBlock extends Tree {
+      public List<Tree> body;
+ 
+      public CaseBlock(List<Tree> body, Location loc) {
+          super(CASEBLOCK, loc);
+        this.body = body;
+      }
+
+      @Override
+        public void accept(Visitor v) {
+            v.visitCaseBlock(this);
+        }
+      
+      @Override
+      public void printTo(IndentPrintWriter pw) {
+        pw.println("caseblock");
+        pw.incIndent();
+        if (body.size() == 0) {
+          pw.println("<empty>");
+        }
+        else {
+          for (Tree s : body) {
+            s.printTo(pw);
+          }
+        }
+        pw.decIndent();
+      }
+    }
+
     /**
       * A while loop
       */
@@ -573,7 +656,7 @@ public abstract class Tree {
     		if (init != null) {
     			init.printTo(pw);
     		} else {
-    			pw.println("<emtpy>");
+    			pw.println("<empty>");
     		}
     		condition.printTo(pw);
     		if (update != null) {
@@ -587,6 +670,108 @@ public abstract class Tree {
     		pw.decIndent();
     	}
    }
+
+    /**
+      * A for loop.
+      */
+    public static class RepeatLoop extends Tree {
+      public Expr condition;
+      public Tree loopBody;
+
+      public RepeatLoop(Expr condition, Tree loopBody, Location loc) {
+          super(REPEATLOOP, loc);
+        this.condition = condition;
+        this.loopBody = loopBody;
+      }
+
+      @Override
+      public void accept(Visitor v) {
+          v.visitRepeatLoop(this);
+      }
+
+      @Override
+      public void printTo(IndentPrintWriter pw) {
+        pw.println("repeat");
+        pw.incIndent();
+        if (loopBody != null) {
+          loopBody.printTo(pw);
+        }
+        condition.printTo(pw);
+        pw.decIndent();
+      }
+    }
+
+    public static class Switch extends Tree {
+      public Expr condition;
+      public SwitchBlock body;
+
+      public Switch(Expr condition, SwitchBlock body, Location loc) {
+          super(SWITCH, loc);
+          this.condition = condition;
+          this.body = body;
+      }
+
+      @Override
+      public void accept(Visitor v) {
+        v.visitSwitch(this);
+      }
+
+      @Override
+      public void printTo(IndentPrintWriter pw) {
+        pw.println("switch");
+        pw.incIndent();
+        condition.printTo(pw);
+        body.printTo(pw);
+        pw.decIndent();
+      }
+    }
+
+    public static class Case extends Tree {
+      public Expr condition;
+      public CaseBlock body;
+
+      public Case(Expr condition, CaseBlock body, Location loc) {
+          super(CASE, loc);
+          this.condition = condition;
+          this.body = body;
+      }
+
+      @Override
+      public void accept(Visitor v) {
+        v.visitCase(this);
+      }
+
+      @Override
+      public void printTo(IndentPrintWriter pw) {
+        pw.println("case");
+        pw.incIndent();
+        condition.printTo(pw);
+        body.printTo(pw);
+        pw.decIndent();
+      }
+    }
+
+    public static class Default extends Tree {
+      public CaseBlock body;
+
+      public Default(CaseBlock body, Location loc) {
+          super(DEFAULT, loc);
+          this.body = body;
+      }
+
+      @Override
+      public void accept(Visitor v) {
+        v.visitDefault(this);
+      }
+
+      @Override
+      public void printTo(IndentPrintWriter pw) {
+        pw.println("default");
+        pw.incIndent();
+        body.printTo(pw);
+        pw.decIndent();
+      }
+    }
 
     /**
       * An "if ( ) { } else { }" block
@@ -908,6 +1093,18 @@ public abstract class Tree {
     		case NOT:
     			unaryOperatorToString(pw, "not");
     			break;
+        case PREINC:
+          unaryOperatorToString(pw, "preadd");
+          break;
+        case POSTINC:
+          unaryOperatorToString(pw, "postadd");
+          break;
+        case PREDEC:
+          unaryOperatorToString(pw, "preminus");
+          break;
+        case POSTDEC:
+          unaryOperatorToString(pw, "postminus");
+          break;
 			}
     	}
    }
@@ -984,6 +1181,42 @@ public abstract class Tree {
     		}
     	}
     }
+
+    /**
+      * Ternary operation.
+      */
+    public static class Ternary extends Expr {
+
+      public Expr condition;
+      public Expr expr1;
+      public Expr expr2;
+
+      public Ternary(int kind, Expr condition, Expr expr1, Expr expr2, Location loc) {
+          super(kind, loc);
+        this.condition = condition;
+        this.expr1 = expr1;
+        this.expr2 = expr2;
+      }
+
+      private void TernaryOperatorToString(IndentPrintWriter pw, String op) {
+        pw.println(op);
+        pw.incIndent();
+        condition.printTo(pw);
+        expr1.printTo(pw);
+        expr2.printTo(pw);
+        pw.decIndent();
+      }
+
+      @Override
+      public void accept(Visitor v) {
+        v.visitTernary(this);
+      }
+
+      @Override
+      public void printTo(IndentPrintWriter pw) {
+        TernaryOperatorToString(pw, "cond");
+      }
+   }
 
     public static class CallExpr extends Expr {
 
@@ -1373,11 +1606,35 @@ public abstract class Tree {
             visitTree(that);
         }
 
+        public void visitSwitchBlock(SwitchBlock that) {
+            visitTree(that);
+        }
+
+        public void visitCaseBlock(CaseBlock that) {
+            visitTree(that);
+        }
+
         public void visitWhileLoop(WhileLoop that) {
             visitTree(that);
         }
 
         public void visitForLoop(ForLoop that) {
+            visitTree(that);
+        }
+
+        public void visitRepeatLoop(RepeatLoop that) {
+            visitTree(that);
+        }
+
+        public void visitSwitch(Switch that) {
+            visitTree(that);
+        }
+
+        public void visitCase(Case that) {
+            visitTree(that);
+        }
+
+        public void visitDefault(Default that) {
             visitTree(that);
         }
 
@@ -1418,6 +1675,10 @@ public abstract class Tree {
         }
 
         public void visitBinary(Binary that) {
+            visitTree(that);
+        }
+
+        public void visitTernary(Ternary that) {
             visitTree(that);
         }
 
