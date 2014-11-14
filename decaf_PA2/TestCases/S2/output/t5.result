@@ -1,1 +1,2 @@
-*** Error at (1,7): syntax error
+*** Error at (14,18): incompatible operands: int * bool
+*** Error at (14,26): incompatible operands: int unknow int
