@@ -233,6 +233,14 @@ public class BuildSym extends Tree.Visitor {
 		}
 	}
 
+	// Add RepeatLoop.
+	@Override
+	public void visitRepeatLoop(Tree.RepeatLoop repeatLoop) {
+		if (repeatLoop.loopBody != null) {
+			repeatLoop.loopBody.accept(this);
+		}
+	}
+
 	private int calcOrder(Class c) {
 		if (c == null) {
 			return -1;

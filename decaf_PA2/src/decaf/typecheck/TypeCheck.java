@@ -529,6 +529,17 @@ public class TypeCheck extends Tree.Visitor {
 		breaks.pop();
 	}
 
+	// Add RepeatLoop
+	@Override
+	public void visitRepeatLoop(Tree.RepeatLoop repeatLoop) {
+		checkTestExpr(repeatLoop.condition);
+		breaks.add(repeatLoop);
+		if (repeatLoop.loopBody != null) {
+			repeatLoop.loopBody.accept(this);
+		}
+		breaks.pop();
+	}
+
 	// visiting types
 	@Override
 	public void visitTypeIdent(Tree.TypeIdent type) {

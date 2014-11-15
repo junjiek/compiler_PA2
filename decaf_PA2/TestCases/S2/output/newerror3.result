@@ -1,10 +1,6 @@
-GLOBAL SCOPE:
-    (1,1) -> class Main
-    CLASS SCOPE OF 'Main':
-        (2,17) -> static function main : void
-        FORMAL SCOPE OF 'main':
-            LOCAL SCOPE:
-                (3,13) -> variable i : int
-                (4,13) -> variable b : int
-                (5,14) -> variable d : bool
-                (6,16) -> variable s : string
+*** Error at (8,15): incompatible operands: int = bool
+*** Error at (8,18): incompatible operand: ! int
+*** Error at (9,13): undeclared variable 'a'
+*** Error at (9,19): incompatible operands: int + string
+*** Error at (10,19): incompatible operands: int - bool
+*** Error at (13,16): test expression must have bool type
