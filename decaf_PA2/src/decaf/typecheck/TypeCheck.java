@@ -579,7 +579,6 @@ public class TypeCheck extends Tree.Visitor {
 	private Type checkBinaryOp(Tree.Expr left, Tree.Expr right, int op, Location location) {
 		left.accept(this);
 		right.accept(this);
-
 		if (left.type.equal(BaseType.ERROR) || right.type.equal(BaseType.ERROR)) {
 			switch (op) {
 			case Tree.PLUS:

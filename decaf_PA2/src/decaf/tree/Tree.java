@@ -1093,19 +1093,19 @@ public abstract class Tree {
     		case NOT:
     			unaryOperatorToString(pw, "not");
     			break;
-        case PREINC:
-          unaryOperatorToString(pw, "preadd");
-          break;
-        case POSTINC:
-          unaryOperatorToString(pw, "postadd");
-          break;
-        case PREDEC:
-          unaryOperatorToString(pw, "preminus");
-          break;
-        case POSTDEC:
-          unaryOperatorToString(pw, "postminus");
-          break;
-			}
+            case PREINC:
+              unaryOperatorToString(pw, "preadd");
+              break;
+            case POSTINC:
+              unaryOperatorToString(pw, "postadd");
+              break;
+            case PREDEC:
+              unaryOperatorToString(pw, "preminus");
+              break;
+            case POSTDEC:
+              unaryOperatorToString(pw, "postminus");
+              break;
+    		}
     	}
    }
 
