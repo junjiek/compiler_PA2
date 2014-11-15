@@ -38,7 +38,7 @@ def main():
         # Check the result
         expected = read_txt_file(os.path.join('result', bname+'.result'))
         actual = read_txt_file(os.path.join('output', bname+'.result'))
-        print actual
+        # print actual
         if expected == actual:
             info = 'OK :)'
         else:
