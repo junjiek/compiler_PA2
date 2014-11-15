@@ -31,6 +31,7 @@ import decaf.error.RefNonStaticError;
 import decaf.error.SubNotIntError;
 import decaf.error.ThisInStaticFuncError;
 import decaf.error.UndeclVarError;
+import decaf.error.LvalueRequiredError;
 import decaf.frontend.Parser;
 import decaf.scope.ClassScope;
 import decaf.scope.FormalScope;
@@ -77,14 +78,45 @@ public class TypeCheck extends Tree.Visitor {
 						expr.expr.type.toString()));
 				expr.type = BaseType.ERROR;
 			}
-		}
-		else{
+		} else if(expr.tag == Tree.NOT) {
 			if (!(expr.expr.type.equal(BaseType.BOOL) || expr.expr.type
 					.equal(BaseType.ERROR))) {
 				issueError(new IncompatUnOpError(expr.getLocation(), "!",
 						expr.expr.type.toString()));
 			}
 			expr.type = BaseType.BOOL;
+		} else if(expr.tag == Tree.PREINC) {
+			if (expr.expr.type.equal(BaseType.ERROR)
+					|| expr.expr instanceof Tree.LValue) {
+				expr.type = expr.expr.type;
+			} else {
+				issueError(new LvalueRequiredError(expr.getLocation(), "++"));
+				expr.type = BaseType.ERROR;
+			}
+		} else if(expr.tag == Tree.POSTINC) {
+			if (expr.expr.type.equal(BaseType.ERROR)
+					|| expr.expr instanceof Tree.LValue) {
+				expr.type = expr.expr.type;
+			} else {
+				issueError(new LvalueRequiredError(expr.getLocation(), "++"));
+				expr.type = BaseType.ERROR;
+			}
+		} else if(expr.tag == Tree.PREDEC) {
+			if (expr.expr.type.equal(BaseType.ERROR)
+					|| expr.expr instanceof Tree.LValue) {
+				expr.type = expr.expr.type;
+			} else {
+				issueError(new LvalueRequiredError(expr.getLocation(), "--"));
+				expr.type = BaseType.ERROR;
+			}
+		} else if(expr.tag == Tree.POSTDEC) {
+			if (expr.expr.type.equal(BaseType.ERROR)
+					|| expr.expr instanceof Tree.LValue) {
+				expr.type = expr.expr.type;
+			} else {
+				issueError(new LvalueRequiredError(expr.getLocation(), "--"));
+				expr.type = BaseType.ERROR;
+			}
 		}
 	}
 
