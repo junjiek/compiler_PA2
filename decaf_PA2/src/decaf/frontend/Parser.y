@@ -209,8 +209,6 @@ Stmt            :   VariableDef
                 |   ForStmt
                 |   RepeatStmt
                 |   SwitchStmt
-                |   SelfIncStmt ';'
-                |   SelfDecStmt ';'
                 |   ReturnStmt ';'
                 |   PrintStmt ';'
                 |   BreakStmt ';'
@@ -225,6 +223,8 @@ SimpleStmt      :   LValue '=' Expr
                     {
                         $$.stmt = new Tree.Exec($1.expr, $1.loc);
                     }
+                |   SelfIncStmt
+                |   SelfDecStmt
                 |   /* empty */
                     {
                         $$ = new SemValue();
