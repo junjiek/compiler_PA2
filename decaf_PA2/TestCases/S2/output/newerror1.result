@@ -1,13 +1,4 @@
-Exception in thread "main" java.lang.NullPointerException
-	at decaf.typecheck.TypeCheck.visitAssign(TypeCheck.java:478)
-	at decaf.tree.Tree$Assign.accept(Tree.java:1050)
-	at decaf.typecheck.TypeCheck.visitBlock(TypeCheck.java:467)
-	at decaf.tree.Tree$Block.accept(Tree.java:525)
-	at decaf.typecheck.TypeCheck.visitMethodDef(TypeCheck.java:450)
-	at decaf.tree.Tree$MethodDef.accept(Tree.java:445)
-	at decaf.typecheck.TypeCheck.visitClassDef(TypeCheck.java:441)
-	at decaf.tree.Tree$ClassDef.accept(Tree.java:410)
-	at decaf.typecheck.TypeCheck.visitTopLevel(TypeCheck.java:458)
-	at decaf.typecheck.TypeCheck.checkType(TypeCheck.java:63)
-	at decaf.Driver.compile(Driver.java:82)
-	at decaf.Driver.main(Driver.java:96)
+*** Error at (12,13): test expression must have bool type
+*** Error at (12,13): operands to ?:  have different types int and bool
+*** Error at (13,9): incompatible operand: ++ string
+*** Error at (14,9): incompatible operand: -- bool

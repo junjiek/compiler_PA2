@@ -34,6 +34,7 @@ import decaf.error.UndeclVarError;
 import decaf.error.LvalueRequiredError;
 import decaf.error.IncompatSwitchError;
 import decaf.error.IncompatCaseError;
+import decaf.error.IncompatTestOpError;
 import decaf.frontend.Parser;
 import decaf.scope.ClassScope;
 import decaf.scope.FormalScope;
@@ -88,36 +89,56 @@ public class TypeCheck extends Tree.Visitor {
 			}
 			expr.type = BaseType.BOOL;
 		} else if(expr.tag == Tree.PREINC) {
-			if (expr.expr.type.equal(BaseType.ERROR)
-					|| expr.expr instanceof Tree.LValue) {
+			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
-			} else {
+			} else if (!(expr.expr instanceof Tree.LValue)) {
 				issueError(new LvalueRequiredError(expr.getLocation(), "++"));
 				expr.type = BaseType.ERROR;
+			} else if (!expr.expr.type.equal(BaseType.INT)) {
+				issueError(new IncompatUnOpError(expr.getLocation(), "++",
+						expr.expr.type.toString()));
+				expr.type = BaseType.ERROR;
+			} else {
+				expr.type = expr.expr.type;
 			}
 		} else if(expr.tag == Tree.POSTINC) {
-			if (expr.expr.type.equal(BaseType.ERROR)
-					|| expr.expr instanceof Tree.LValue) {
+			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
-			} else {
+			} else if (!(expr.expr instanceof Tree.LValue)) {
 				issueError(new LvalueRequiredError(expr.getLocation(), "++"));
 				expr.type = BaseType.ERROR;
+			} else if (!expr.expr.type.equal(BaseType.INT)) {
+				issueError(new IncompatUnOpError(expr.getLocation(), "++",
+						expr.expr.type.toString()));
+				expr.type = BaseType.ERROR;
+			} else {
+				expr.type = expr.expr.type;
 			}
 		} else if(expr.tag == Tree.PREDEC) {
-			if (expr.expr.type.equal(BaseType.ERROR)
-					|| expr.expr instanceof Tree.LValue) {
+			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
-			} else {
+			} else if (!(expr.expr instanceof Tree.LValue)) {
 				issueError(new LvalueRequiredError(expr.getLocation(), "--"));
 				expr.type = BaseType.ERROR;
+			} else if (!expr.expr.type.equal(BaseType.INT)) {
+				issueError(new IncompatUnOpError(expr.getLocation(), "--",
+						expr.expr.type.toString()));
+				expr.type = BaseType.ERROR;
+			} else {
+				expr.type = expr.expr.type;
 			}
 		} else if(expr.tag == Tree.POSTDEC) {
-			if (expr.expr.type.equal(BaseType.ERROR)
-					|| expr.expr instanceof Tree.LValue) {
+			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
-			} else {
+			} else if (!(expr.expr instanceof Tree.LValue)) {
 				issueError(new LvalueRequiredError(expr.getLocation(), "--"));
 				expr.type = BaseType.ERROR;
+			} else if (!expr.expr.type.equal(BaseType.INT)) {
+				issueError(new IncompatUnOpError(expr.getLocation(), "--",
+						expr.expr.type.toString()));
+				expr.type = BaseType.ERROR;
+			} else {
+				expr.type = expr.expr.type;
 			}
 		}
 	}
@@ -561,6 +582,32 @@ public class TypeCheck extends Tree.Visitor {
 			whileLoop.loopBody.accept(this);
 		}
 		breaks.pop();
+	}
+
+	@Override
+	public void visitTernary(Tree.Ternary expr) {
+		expr.type = checkTernaryOp(expr.condition, expr.expr1, expr.expr2, expr.loc);
+	}
+
+	private Type checkTernaryOp(Tree.Expr condition, Tree.Expr expr1,
+								Tree.Expr expr2, Location location) {
+		condition.accept(this);
+		expr1.accept(this);
+		expr2.accept(this);
+		if (condition.type.equal(BaseType.ERROR) ||
+			expr1.type.equal(BaseType.ERROR) ||
+			expr2.type.equal(BaseType.ERROR)) {
+			return BaseType.ERROR;
+		}
+		if (!condition.type.equal(BaseType.BOOL)) {
+			issueError(new BadTestExpr(location));
+		}
+		if (!expr1.type.equal(expr2.type)) {
+			issueError(new IncompatTestOpError(location, expr1.type.toString(), expr2.type.toString()));
+		} else {
+			return expr1.type;
+		}
+		return BaseType.ERROR;
 	}
 
 	// Add switch-case

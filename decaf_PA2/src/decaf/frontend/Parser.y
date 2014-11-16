@@ -348,7 +348,7 @@ Expr            :   LValue
                     }
                 |   Expr '?' Expr ':' Expr
                     {
-                        $$.expr = new Tree.Ternary(Tree.TERNARY, $1.expr, $3.expr, $5.expr, $2.loc);
+                        $$.expr = new Tree.Ternary(Tree.TERNARY, $1.expr, $3.expr, $5.expr, $1.loc);
                     }
                 |   READ_INTEGER '(' ')'
                     {

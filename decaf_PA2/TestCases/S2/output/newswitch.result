@@ -1,21 +1,18 @@
-Exception in thread "main" java.lang.NullPointerException
-	at decaf.typecheck.TypeCheck.visitReturn(TypeCheck.java:549)
-	at decaf.tree.Tree$Return.accept(Tree.java:902)
-	at decaf.typecheck.TypeCheck.visitCaseBlock(TypeCheck.java:614)
-	at decaf.tree.Tree$CaseBlock.accept(Tree.java:578)
-	at decaf.typecheck.TypeCheck.visitCase(TypeCheck.java:600)
-	at decaf.tree.Tree$Case.accept(Tree.java:741)
-	at decaf.typecheck.TypeCheck.visitSwitchBlock(TypeCheck.java:586)
-	at decaf.tree.Tree$SwitchBlock.accept(Tree.java:551)
-	at decaf.typecheck.TypeCheck.visitSwitch(TypeCheck.java:577)
-	at decaf.tree.Tree$Switch.accept(Tree.java:716)
-	at decaf.typecheck.TypeCheck.visitBlock(TypeCheck.java:467)
-	at decaf.tree.Tree$Block.accept(Tree.java:525)
-	at decaf.typecheck.TypeCheck.visitMethodDef(TypeCheck.java:450)
-	at decaf.tree.Tree$MethodDef.accept(Tree.java:445)
-	at decaf.typecheck.TypeCheck.visitClassDef(TypeCheck.java:441)
-	at decaf.tree.Tree$ClassDef.accept(Tree.java:410)
-	at decaf.typecheck.TypeCheck.visitTopLevel(TypeCheck.java:458)
-	at decaf.typecheck.TypeCheck.checkType(TypeCheck.java:63)
-	at decaf.Driver.compile(Driver.java:82)
-	at decaf.Driver.main(Driver.java:96)
+GLOBAL SCOPE:
+    (1,1) -> class Main
+    CLASS SCOPE OF 'Main':
+        (2,14) -> static function isLeapYear : int->bool
+        (5,13) -> static function getNumberOfDays : int->int->int
+        (22,14) -> static function main : void
+        FORMAL SCOPE OF 'isLeapYear':
+            (2,29) -> variable @y : int
+            LOCAL SCOPE:
+        FORMAL SCOPE OF 'getNumberOfDays':
+            (5,33) -> variable @y : int
+            (5,40) -> variable @m : int
+            LOCAL SCOPE:
+        FORMAL SCOPE OF 'main':
+            LOCAL SCOPE:
+                (23,7) -> variable c : int
+                (24,7) -> variable y : int
+                (25,7) -> variable m : int
