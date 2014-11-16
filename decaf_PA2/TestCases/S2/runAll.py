@@ -13,14 +13,12 @@ import os
 import subprocess
 import sys
 
-
 def read_txt_file(filename):
-    with open(filename, 'r') as f:
+    with open(filename,'r') as f:
         txt = f.read().strip()
     # Python should be able to do it automatically, but just in case...
-    txt = txt.replace('\r', '')
+    txt = txt.replace('\r','')
     return txt
-
 
 def main():
     decaf_jar = os.path.join('..', '..', 'result', 'decaf.jar')
@@ -28,7 +26,7 @@ def main():
     if not names:
         names = sorted(os.listdir('.'))
     for name in names:
-        bname, ext = os.path.splitext(name)
+        bname,ext = os.path.splitext(name)
         if ext != '.decaf':
             continue
         # Run the test case, redirecting stdout/stderr to output/bname.result
@@ -36,20 +34,19 @@ def main():
                 stdout=open(os.path.join('output', bname + '.result'), 'w'),
                 stderr=subprocess.STDOUT)
         # Check the result
-        expected = read_txt_file(os.path.join('result', bname+'.result'))
-        actual = read_txt_file(os.path.join('output', bname+'.result'))
-        # print actual
+        expected = read_txt_file(os.path.join('result',bname+'.result'))
+        actual = read_txt_file(os.path.join('output',bname+'.result'))
         if expected == actual:
             info = 'OK :)'
         else:
             info = 'ERROR!'
-        print('{0:<20}{1}'.format(name, info))
+        print('{0:<20}{1}'.format(name,info))
     if os.name == 'nt':
         print('Press Enter to continue...')
         try:
-            raw_input()  # Python 2
+            raw_input() # Python 2
         except:
-            input()  # Python 3
+            input() # Python 3
 
 if __name__ == '__main__':
     main()
