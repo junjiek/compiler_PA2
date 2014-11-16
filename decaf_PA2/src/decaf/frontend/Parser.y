@@ -454,7 +454,7 @@ DefaultReceiver :   DefaultStmt
 
 CaseStmt        :   CASE Constant ':' CaseBlock
                     {
-                        $$.stmt = new Tree.Case($2.expr, (CaseBlock)$4.stmt, $1.loc);
+                        $$.stmt = new Tree.Case((Literal)$2.expr, (CaseBlock)$4.stmt, $1.loc);
                     }
                 ;
 

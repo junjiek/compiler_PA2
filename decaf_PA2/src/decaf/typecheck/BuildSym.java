@@ -233,6 +233,47 @@ public class BuildSym extends Tree.Visitor {
 		}
 	}
 
+	// Add switch-case
+	@Override
+	public void visitSwitch(Tree.Switch myswitch) {
+		if (myswitch.body != null) {
+			myswitch.body.accept(this);
+		}
+	}
+
+	@Override
+	public void visitSwitchBlock(Tree.SwitchBlock switchBlock) {
+		if (switchBlock.caseList != null) {
+			for(Tree s : switchBlock.caseList)
+				s.accept(this);
+		}
+		if (switchBlock.defaultCase != null) {
+			switchBlock.defaultCase.accept(this);
+		}
+	}
+
+	@Override
+	public void visitCase(Tree.Case mycase) {
+		if (mycase.body != null) {
+			mycase.body.accept(this);
+		}
+	}
+
+	@Override
+	public void visitDefault(Tree.Default mydefault) {
+		if (mydefault.body != null) {
+			mydefault.body.accept(this);
+		}
+	}
+	@Override
+	public void visitCaseBlock(Tree.CaseBlock caseBlock) {
+		if (caseBlock.body != null) {
+			for (Tree s : caseBlock.body) {
+				s.accept(this);
+			}
+		}
+	}
+
 	// Add RepeatLoop.
 	@Override
 	public void visitRepeatLoop(Tree.RepeatLoop repeatLoop) {

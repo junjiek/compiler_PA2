@@ -727,10 +727,10 @@ public abstract class Tree {
     }
 
     public static class Case extends Tree {
-      public Expr condition;
+      public Literal condition;
       public CaseBlock body;
 
-      public Case(Expr condition, CaseBlock body, Location loc) {
+      public Case(Literal condition, CaseBlock body, Location loc) {
           super(CASE, loc);
           this.condition = condition;
           this.body = body;

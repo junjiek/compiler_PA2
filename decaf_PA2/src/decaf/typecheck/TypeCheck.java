@@ -32,6 +32,8 @@ import decaf.error.SubNotIntError;
 import decaf.error.ThisInStaticFuncError;
 import decaf.error.UndeclVarError;
 import decaf.error.LvalueRequiredError;
+import decaf.error.IncompatSwitchError;
+import decaf.error.IncompatCaseError;
 import decaf.frontend.Parser;
 import decaf.scope.ClassScope;
 import decaf.scope.FormalScope;
@@ -559,6 +561,59 @@ public class TypeCheck extends Tree.Visitor {
 			whileLoop.loopBody.accept(this);
 		}
 		breaks.pop();
+	}
+
+	// Add switch-case
+	// TODO: breaks ?
+	@Override
+	public void visitSwitch(Tree.Switch myswitch) {
+		myswitch.condition.accept(this);
+		if (!myswitch.condition.type.equal(BaseType.INT)) {
+			issueError(new IncompatSwitchError(myswitch.condition.getLocation(),
+					   myswitch.condition.type.toString()));
+		}
+		breaks.add(myswitch);
+		if (myswitch.body != null) {
+			myswitch.body.accept(this);
+		}
+		breaks.pop();
+	}
+
+	@Override
+	public void visitSwitchBlock(Tree.SwitchBlock switchBlock) {
+		if (switchBlock.caseList != null) {
+			for(Tree s : switchBlock.caseList)
+				s.accept(this);
+		}
+		if (switchBlock.defaultCase != null) {
+			switchBlock.defaultCase.accept(this);
+		}
+	}
+
+	@Override
+	public void visitCase(Tree.Case mycase) {
+		mycase.condition.accept(this);
+		if (!mycase.condition.type.equal(BaseType.INT)) {
+			issueError(new IncompatCaseError(mycase.condition.getLocation()));
+		}
+		if (mycase.body != null) {
+			mycase.body.accept(this);
+		}
+	}
+
+	@Override
+	public void visitDefault(Tree.Default mydefault) {
+		if (mydefault.body != null) {
+			mydefault.body.accept(this);
+		}
+	}
+	@Override
+	public void visitCaseBlock(Tree.CaseBlock caseBlock) {	
+		if (caseBlock.body != null) {
+			for (Tree s : caseBlock.body) {
+				s.accept(this);
+			}
+		}
 	}
 
 	// Add RepeatLoop
