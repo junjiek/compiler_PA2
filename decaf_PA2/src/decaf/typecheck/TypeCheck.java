@@ -92,7 +92,7 @@ public class TypeCheck extends Tree.Visitor {
 			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
 			} else if (!(expr.expr instanceof Tree.LValue)) {
-				issueError(new LvalueRequiredError(expr.getLocation(), "++"));
+				issueError(new LvalueRequiredError(expr.expr.getLocation(), "++"));
 				expr.type = BaseType.ERROR;
 			} else if (!expr.expr.type.equal(BaseType.INT)) {
 				issueError(new IncompatUnOpError(expr.getLocation(), "++",
@@ -105,7 +105,7 @@ public class TypeCheck extends Tree.Visitor {
 			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
 			} else if (!(expr.expr instanceof Tree.LValue)) {
-				issueError(new LvalueRequiredError(expr.getLocation(), "++"));
+				issueError(new LvalueRequiredError(expr.expr.getLocation(), "++"));
 				expr.type = BaseType.ERROR;
 			} else if (!expr.expr.type.equal(BaseType.INT)) {
 				issueError(new IncompatUnOpError(expr.getLocation(), "++",
@@ -118,7 +118,7 @@ public class TypeCheck extends Tree.Visitor {
 			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
 			} else if (!(expr.expr instanceof Tree.LValue)) {
-				issueError(new LvalueRequiredError(expr.getLocation(), "--"));
+				issueError(new LvalueRequiredError(expr.expr.getLocation(), "--"));
 				expr.type = BaseType.ERROR;
 			} else if (!expr.expr.type.equal(BaseType.INT)) {
 				issueError(new IncompatUnOpError(expr.getLocation(), "--",
@@ -131,7 +131,7 @@ public class TypeCheck extends Tree.Visitor {
 			if (expr.expr.type.equal(BaseType.ERROR)) {
 				expr.type = expr.expr.type;
 			} else if (!(expr.expr instanceof Tree.LValue)) {
-				issueError(new LvalueRequiredError(expr.getLocation(), "--"));
+				issueError(new LvalueRequiredError(expr.expr.getLocation(), "--"));
 				expr.type = BaseType.ERROR;
 			} else if (!expr.expr.type.equal(BaseType.INT)) {
 				issueError(new IncompatUnOpError(expr.getLocation(), "--",
